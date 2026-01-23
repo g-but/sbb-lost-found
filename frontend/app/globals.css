@@ -1,0 +1,262 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* SBB Design System Global Styles */
+:root {
+  /* Official SBB Colors */
+  --sbb-red: #EB0000;
+  --sbb-red-125: #C60018;
+  --sbb-red-150: #A20013;
+  --sbb-charcoal: #212121;
+  --sbb-iron: #444444;
+  --sbb-granite: #686868;
+  --sbb-smoke: #8D8D8D;
+  --sbb-cloud: #E5E5E5;
+  --sbb-milk: #F6F6F6;
+  --sbb-white: #FFFFFF;
+  --sbb-blue: #2D327D;
+  --sbb-success: #00973B;
+  --sbb-warning: #FFAB00;
+
+  /* Spacing (4px base grid) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Safe area insets for mobile */
+  --safe-area-top: env(safe-area-inset-top);
+  --safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: 'SBB Web', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--sbb-milk);
+  color: var(--sbb-charcoal);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile container (max 430px like iPhone Pro Max) */
+.mobile-container {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  background: var(--sbb-white);
+  position: relative;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Safe area padding */
+.safe-top {
+  padding-top: max(var(--safe-area-top), 44px);
+}
+
+.safe-bottom {
+  padding-bottom: max(var(--safe-area-bottom), 34px);
+}
+
+/* SBB Button styles */
+@layer components {
+  .btn-sbb-primary {
+    @apply bg-sbb-red text-white font-semibold py-4 px-6 rounded-sbb-lg;
+    @apply hover:bg-sbb-red-125 active:bg-sbb-red-150;
+    @apply transition-colors duration-200;
+    @apply shadow-sbb-button;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-sbb-secondary {
+    @apply bg-sbb-cloud text-sbb-charcoal font-medium py-3 px-5 rounded-sbb-md;
+    @apply hover:bg-sbb-silver active:bg-sbb-cement;
+    @apply transition-colors duration-200;
+  }
+
+  .btn-sbb-ghost {
+    @apply bg-transparent text-sbb-red font-medium py-3 px-5 rounded-sbb-md;
+    @apply hover:bg-sbb-milk active:bg-sbb-cloud;
+    @apply transition-colors duration-200;
+  }
+
+  /* SBB Card */
+  .card-sbb {
+    @apply bg-white rounded-sbb-lg shadow-sbb-card;
+    @apply border border-sbb-cloud;
+  }
+
+  /* SBB Input */
+  .input-sbb {
+    @apply w-full py-4 px-4 rounded-sbb-md;
+    @apply bg-sbb-milk border-2 border-sbb-cloud;
+    @apply text-sbb-base text-sbb-charcoal;
+    @apply placeholder:text-sbb-smoke;
+    @apply focus:outline-none focus:border-sbb-red focus:bg-white;
+    @apply transition-colors duration-200;
+  }
+
+  /* SBB Header */
+  .header-sbb {
+    @apply bg-gradient-to-b from-sbb-red to-sbb-red-125;
+    @apply text-white;
+    @apply px-sbb-lg py-sbb-md;
+  }
+}
+
+/* Animations */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Touch feedback */
+.touch-feedback {
+  @apply active:scale-[0.98] transition-transform duration-100;
+}
+
+/* Status bar simulation (for demo) */
+.status-bar-sim {
+  @apply bg-black text-white h-11 flex justify-between items-center px-5;
+  @apply text-[15px] font-semibold tracking-tight;
+}
+
+/* Bottom navigation */
+.bottom-nav {
+  @apply fixed bottom-0 left-1/2 -translate-x-1/2;
+  @apply w-full max-w-[430px];
+  @apply bg-white border-t border-sbb-cloud;
+  @apply flex justify-around;
+  @apply pb-[max(var(--safe-area-bottom),8px)] pt-2;
+  @apply shadow-sbb-modal;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/50 z-50;
+  @apply flex items-end justify-center;
+}
+
+.modal-content {
+  @apply w-full max-w-[430px] bg-white;
+  @apply rounded-t-sbb-xl;
+  @apply max-h-[85vh] overflow-y-auto;
+}
+
+/* Toast notification */
+.toast {
+  @apply fixed top-16 left-1/2 -translate-x-1/2;
+  @apply w-[calc(100%-32px)] max-w-[398px];
+  @apply bg-sbb-success text-white;
+  @apply p-4 rounded-sbb-lg;
+  @apply shadow-sbb-modal;
+  @apply flex items-center gap-3;
+  @apply z-[100];
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-sbb-red;
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
