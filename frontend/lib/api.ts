@@ -1,5 +1,10 @@
 /**
  * API Client for SBB Lost & Found Backend
+ *
+ * SSOT for all API calls. Supports:
+ * - Real backend when available
+ * - Demo mode fallback to mock data
+ * - WebSocket for real-time updates
  */
 
 import { config } from './config';
@@ -9,11 +14,45 @@ import type {
   LostItemFormData,
   Trip,
   Notification,
+  DriverNotification,
+  NotificationStatus,
 } from './types';
+
+// ============================================================================
+// Configuration
+// ============================================================================
+
+const DEMO_MODE = config.demo.enabled;
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3003';
+
+// ============================================================================
+// WebSocket Types
+// ============================================================================
+
+export type WebSocketEventType =
+  | 'lost_item_created'
+  | 'lost_item_status_updated'
+  | 'driver_notification';
+
+export interface WebSocketEvent {
+  type: WebSocketEventType;
+  data: unknown;
+  timestamp: string;
+}
+
+export type WebSocketConnection = {
+  close: () => void;
+  send: (data: unknown) => void;
+} | null;
+
+// ============================================================================
+// API Client
+// ============================================================================
 
 class ApiClient {
   private baseUrl: string;
   private timeout: number;
+  private wsConnection: WebSocket | null = null;
 
   constructor() {
     this.baseUrl = config.api.baseUrl;
@@ -24,6 +63,7 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
+    // In demo mode, we still try the API but don't fail hard
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
@@ -116,11 +156,121 @@ class ApiClient {
   }
 
   // ============================================================================
+  // Driver Notifications
+  // ============================================================================
+
+  async getDriverNotifications(
+    vehicleId: string,
+    filter?: 'all' | 'pending' | 'resolved'
+  ): Promise<ApiResponse<DriverNotification[]>> {
+    const params = new URLSearchParams({ vehicleId });
+    if (filter && filter !== 'all') {
+      params.set('filter', filter);
+    }
+    return this.request<DriverNotification[]>(
+      `/api/driver-notifications?${params.toString()}`
+    );
+  }
+
+  async respondToNotification(
+    notificationId: string,
+    status: 'found' | 'not_found',
+    notes?: string
+  ): Promise<ApiResponse<DriverNotification>> {
+    return this.request<DriverNotification>(
+      `/api/driver-notifications/${notificationId}/respond`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ status, notes }),
+      }
+    );
+  }
+
+  // ============================================================================
+  // WebSocket Connection
+  // ============================================================================
+
+  connectWebSocket(
+    onMessage: (event: WebSocketEvent) => void,
+    onError?: (error: Event) => void,
+    onConnect?: () => void,
+    onDisconnect?: () => void
+  ): WebSocketConnection {
+    if (typeof window === 'undefined') return null;
+
+    try {
+      this.wsConnection = new WebSocket(WS_URL);
+
+      this.wsConnection.onopen = () => {
+        console.log('WebSocket connected');
+        onConnect?.();
+      };
+
+      this.wsConnection.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          onMessage(data);
+        } catch (error) {
+          console.error('Failed to parse WebSocket message:', error);
+        }
+      };
+
+      this.wsConnection.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        onError?.(error);
+      };
+
+      this.wsConnection.onclose = () => {
+        console.log('WebSocket disconnected');
+        onDisconnect?.();
+      };
+
+      return {
+        close: () => this.wsConnection?.close(),
+        send: (data) => this.wsConnection?.send(JSON.stringify(data)),
+      };
+    } catch (error) {
+      console.error('Failed to create WebSocket connection:', error);
+      return null;
+    }
+  }
+
+  disconnectWebSocket(): void {
+    this.wsConnection?.close();
+    this.wsConnection = null;
+  }
+
+  // ============================================================================
   // Health Check
   // ============================================================================
 
   async healthCheck(): Promise<ApiResponse<{ status: string }>> {
     return this.request<{ status: string }>('/health');
+  }
+
+  async checkAllServices(): Promise<{
+    gateway: boolean;
+    services: Record<string, boolean>;
+  }> {
+    try {
+      const response = await fetch(`${this.baseUrl}/healthz`);
+      const data = await response.json();
+
+      if (data.success && data.services) {
+        return {
+          gateway: true,
+          services: Object.fromEntries(
+            Object.entries(data.services).map(([name, status]) => [
+              name,
+              (status as { ok: boolean }).ok,
+            ])
+          ),
+        };
+      }
+      return { gateway: true, services: {} };
+    } catch {
+      return { gateway: false, services: {} };
+    }
   }
 }
 

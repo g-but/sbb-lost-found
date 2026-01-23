@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { AppProvider } from '@/components/providers/AppProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -32,9 +33,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
-        <div className="mobile-container">
-          {children}
-        </div>
+        <AppProvider>
+          <div className="mobile-container">
+            {children}
+          </div>
+        </AppProvider>
       </body>
     </html>
   );

@@ -1,40 +1,10 @@
 'use client';
 
+import { QUICK_ACTIONS_CONFIG } from '@/lib/labels';
+
 interface QuickActionsProps {
   onLostFound: () => void;
 }
-
-const actions = [
-  {
-    id: 'lost-found',
-    title: 'Lost & Found',
-    subtitle: 'Verlust sofort melden',
-    icon: '🧳',
-    gradient: 'from-sbb-red to-[#FF6B6B]',
-    primary: true,
-  },
-  {
-    id: 'tickets',
-    title: 'Tickets kaufen',
-    subtitle: 'Schneller Ticketkauf',
-    icon: '🎫',
-    gradient: 'from-[#2196F3] to-[#64B5F6]',
-  },
-  {
-    id: 'tracking',
-    title: 'Live Tracking',
-    subtitle: 'Reise verfolgen',
-    icon: '📍',
-    gradient: 'from-[#FF9800] to-[#FFB74D]',
-  },
-  {
-    id: 'info',
-    title: 'Reise-Info',
-    subtitle: 'Verspätungen & Updates',
-    icon: 'ℹ️',
-    gradient: 'from-[#4CAF50] to-[#81C784]',
-  },
-];
 
 export function QuickActions({ onLostFound }: QuickActionsProps) {
   const handleClick = (actionId: string) => {
@@ -47,7 +17,7 @@ export function QuickActions({ onLostFound }: QuickActionsProps) {
   return (
     <section className="px-6 py-6">
       <div className="grid grid-cols-2 gap-4">
-        {actions.map((action) => (
+        {QUICK_ACTIONS_CONFIG.map((action) => (
           <button
             key={action.id}
             onClick={() => handleClick(action.id)}
@@ -67,7 +37,7 @@ export function QuickActions({ onLostFound }: QuickActionsProps) {
             <p className="text-sbb-sm text-sbb-granite mt-1">
               {action.subtitle}
             </p>
-            {action.primary && (
+            {'primary' in action && action.primary && (
               <span className="inline-block mt-2 text-sbb-xs text-sbb-red font-medium">
                 Sofort-Benachrichtigung →
               </span>

@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
+import { config } from '@/lib/config';
 
 interface ToastProps {
   message: string;
   type: 'success' | 'error' | 'info';
   onClose: () => void;
+  /** Duration in ms before auto-dismiss. Set to 0 to disable. Uses config default. */
+  duration?: number;
 }
 
 const toastStyles = {
@@ -20,11 +23,12 @@ const toastIcons = {
   info: 'ℹ',
 };
 
-export function Toast({ message, type, onClose }: ToastProps) {
+export function Toast({ message, type, onClose, duration = config.timing.toastDuration }: ToastProps) {
   useEffect(() => {
-    const timer = setTimeout(onClose, 4000);
+    if (duration === 0) return;
+    const timer = setTimeout(onClose, duration);
     return () => clearTimeout(timer);
-  }, [onClose]);
+  }, [onClose, duration]);
 
   return (
     <div
@@ -38,7 +42,7 @@ export function Toast({ message, type, onClose }: ToastProps) {
       <p className="flex-1 text-sbb-sm font-medium">{message}</p>
       <button
         onClick={onClose}
-        className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center"
+        className="w-11 h-11 rounded-full hover:bg-white/10 flex items-center justify-center"
         aria-label="Schliessen"
       >
         ✕

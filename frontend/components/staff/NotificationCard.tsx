@@ -1,12 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import type { DriverNotification, NotificationStatus, ItemCategory } from '@/lib/types';
+import type { StaffNotification, NotificationStatus, ItemCategory } from '@/lib/types';
 import { ITEM_CATEGORY_CONFIG } from '@/lib/types';
 import { formatRelativeTime } from '@/lib/mock-data';
+import { config } from '@/lib/config';
+import { NOTIFICATION_STATUS_CONFIG, UI_LABELS } from '@/lib/labels';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { ChevronIcon, CheckIcon, XIcon } from '@/components/ui/icons';
 
 interface NotificationCardProps {
-  notification: DriverNotification;
+  notification: StaffNotification;
   onUpdateStatus: (id: string, status: NotificationStatus, notes?: string) => Promise<void>;
   isNew?: boolean;
 }
@@ -30,22 +34,11 @@ export function NotificationCard({ notification, onUpdateStatus, isNew }: Notifi
     setIsExpanded(false);
   };
 
-  const getStatusConfig = () => {
-    switch (notification.status) {
-      case 'pending':
-        return { label: 'Neu', color: 'bg-sbb-red', textColor: 'text-white' };
-      case 'acknowledged':
-        return { label: 'In Bearbeitung', color: 'bg-amber-500', textColor: 'text-white' };
-      case 'found':
-        return { label: 'Gefunden', color: 'bg-sbb-success', textColor: 'text-white' };
-      case 'not_found':
-        return { label: 'Nicht gefunden', color: 'bg-sbb-granite', textColor: 'text-white' };
-      default:
-        return { label: notification.status, color: 'bg-sbb-cloud', textColor: 'text-sbb-charcoal' };
-    }
+  const statusConfig = NOTIFICATION_STATUS_CONFIG[notification.status] || {
+    label: notification.status,
+    color: 'bg-sbb-cloud',
+    textColor: 'text-sbb-charcoal',
   };
-
-  const statusConfig = getStatusConfig();
 
   return (
     <div
@@ -70,7 +63,7 @@ export function NotificationCard({ notification, onUpdateStatus, isNew }: Notifi
               {statusConfig.label}
             </span>
             {notification.priority === 'urgent' && isPending && (
-              <span className="text-sbb-xs text-sbb-red font-medium">Dringend</span>
+              <span className="text-sbb-xs text-sbb-red font-medium">{UI_LABELS.lostItem.urgent}</span>
             )}
           </div>
 
@@ -100,20 +93,20 @@ export function NotificationCard({ notification, onUpdateStatus, isNew }: Notifi
           {notification.passengerInfo && (
             <div className="bg-sbb-milk rounded-sbb-md p-3 mt-3 space-y-2">
               <h4 className="text-sbb-xs font-semibold text-sbb-granite uppercase tracking-wide">
-                Angaben des Fahrgastes
+                {UI_LABELS.staff.passengerInfo}
               </h4>
               <div className="grid grid-cols-2 gap-2 text-sbb-sm">
                 <div>
-                  <p className="text-sbb-granite text-sbb-xs">Strecke</p>
+                  <p className="text-sbb-granite text-sbb-xs">{UI_LABELS.staff.route}</p>
                   <p className="font-medium text-sbb-charcoal">{notification.passengerInfo.tripRoute}</p>
                 </div>
                 <div>
-                  <p className="text-sbb-granite text-sbb-xs">Zeit</p>
+                  <p className="text-sbb-granite text-sbb-xs">{UI_LABELS.staff.time}</p>
                   <p className="font-medium text-sbb-charcoal">{notification.passengerInfo.tripTime}</p>
                 </div>
                 {notification.passengerInfo.seatInfo && (
                   <div className="col-span-2">
-                    <p className="text-sbb-granite text-sbb-xs">Position</p>
+                    <p className="text-sbb-granite text-sbb-xs">{UI_LABELS.staff.position}</p>
                     <p className="font-medium text-sbb-charcoal">{notification.passengerInfo.seatInfo}</p>
                   </div>
                 )}
@@ -127,9 +120,10 @@ export function NotificationCard({ notification, onUpdateStatus, isNew }: Notifi
               <textarea
                 value={responseNotes}
                 onChange={(e) => setResponseNotes(e.target.value)}
-                placeholder="Optionale Notiz (z.B. wo gefunden, Zustand)..."
+                placeholder={UI_LABELS.staff.optionalNote}
                 className="input-sbb text-sbb-sm resize-none"
                 rows={2}
+                maxLength={config.validation.notes.maxLength}
               />
 
               <div className="flex gap-2">
@@ -143,7 +137,7 @@ export function NotificationCard({ notification, onUpdateStatus, isNew }: Notifi
                   ) : (
                     <>
                       <CheckIcon className="w-5 h-5" />
-                      Gefunden
+                      {UI_LABELS.actions.found}
                     </>
                   )}
                 </button>
@@ -157,7 +151,7 @@ export function NotificationCard({ notification, onUpdateStatus, isNew }: Notifi
                   ) : (
                     <>
                       <XIcon className="w-5 h-5" />
-                      Nicht gefunden
+                      {UI_LABELS.actions.notFound}
                     </>
                   )}
                 </button>
@@ -169,7 +163,7 @@ export function NotificationCard({ notification, onUpdateStatus, isNew }: Notifi
           {!isPending && notification.response && (
             <div className="mt-3 bg-sbb-milk rounded-sbb-md p-3">
               <h4 className="text-sbb-xs font-semibold text-sbb-granite uppercase tracking-wide mb-2">
-                Ihre Rückmeldung
+                {UI_LABELS.staff.yourResponse}
               </h4>
               {notification.response.notes && (
                 <p className="text-sbb-sm text-sbb-charcoal">
@@ -178,7 +172,7 @@ export function NotificationCard({ notification, onUpdateStatus, isNew }: Notifi
               )}
               {notification.respondedAt && (
                 <p className="text-sbb-xs text-sbb-smoke mt-2">
-                  Beantwortet {formatRelativeTime(notification.respondedAt)}
+                  {UI_LABELS.staff.answeredAt} {formatRelativeTime(notification.respondedAt)}
                 </p>
               )}
             </div>
@@ -186,49 +180,5 @@ export function NotificationCard({ notification, onUpdateStatus, isNew }: Notifi
         </div>
       )}
     </div>
-  );
-}
-
-function ChevronIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function CheckIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function XIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function LoadingSpinner() {
-  return (
-    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
-    </svg>
   );
 }

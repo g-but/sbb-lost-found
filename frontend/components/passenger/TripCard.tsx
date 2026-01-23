@@ -2,6 +2,8 @@
 
 import type { Trip } from '@/lib/types';
 import { formatTime, getTimeSinceTrip } from '@/lib/mock-data';
+import { UI_LABELS } from '@/lib/labels';
+import { TrainIcon, VehicleIcon, SearchIcon } from '@/components/ui/icons';
 
 interface TripCardProps {
   trip: Trip;
@@ -17,11 +19,11 @@ export function TripCard({ trip, variant, onReportLost, timeAgo }: TripCardProps
 
   if (variant === 'active') {
     return (
-      <div className="bg-gradient-to-br from-[#1976D2] to-[#42A5F5] text-white rounded-sbb-lg p-5 shadow-lg">
+      <div className="bg-gradient-to-br from-sbb-blue to-sbb-blue text-white rounded-sbb-lg p-5 shadow-lg">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">
             <TrainIcon className="w-5 h-5" />
-            <span className="text-sbb-sm font-medium opacity-90">Aktuelle Reise</span>
+            <span className="text-sbb-sm font-medium opacity-90">{UI_LABELS.trip.currentTrip}</span>
           </div>
           <span className="text-sbb-sm opacity-90">{formatTime(trip.departureTime)}</span>
         </div>
@@ -31,8 +33,8 @@ export function TripCard({ trip, variant, onReportLost, timeAgo }: TripCardProps
         </h3>
 
         <div className="flex justify-between text-sbb-sm opacity-90 mb-4">
-          <span>{trip.vehicle.number} • Wagen {trip.car}</span>
-          <span>Ankunft {formatTime(trip.arrivalTime)}</span>
+          <span>{trip.vehicle.number} • {UI_LABELS.trip.car} {trip.car}</span>
+          <span>{UI_LABELS.trip.arrival} {formatTime(trip.arrivalTime)}</span>
         </div>
 
         <button
@@ -40,7 +42,7 @@ export function TripCard({ trip, variant, onReportLost, timeAgo }: TripCardProps
           className="w-full bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-4 rounded-sbb-md transition-colors flex items-center justify-center gap-2"
         >
           <SearchIcon className="w-5 h-5" />
-          Etwas verloren?
+          {UI_LABELS.actions.lostSomething}
         </button>
       </div>
     );
@@ -59,7 +61,7 @@ export function TripCard({ trip, variant, onReportLost, timeAgo }: TripCardProps
             )}
             {isUrgent && (
               <span className="text-sbb-xs text-sbb-red font-medium bg-red-50 px-2 py-0.5 rounded-full">
-                Dringend
+                {UI_LABELS.lostItem.urgent}
               </span>
             )}
           </div>
@@ -70,7 +72,7 @@ export function TripCard({ trip, variant, onReportLost, timeAgo }: TripCardProps
 
           <p className="text-sbb-sm text-sbb-granite mt-1">
             {formatTime(trip.departureTime)} - {formatTime(trip.arrivalTime)}
-            {trip.car && ` • Wagen ${trip.car}`}
+            {trip.car && ` • ${UI_LABELS.trip.car} ${trip.car}`}
           </p>
         </div>
 
@@ -88,51 +90,11 @@ export function TripCard({ trip, variant, onReportLost, timeAgo }: TripCardProps
                 : 'bg-sbb-cloud text-sbb-charcoal hover:bg-sbb-silver'
             }
           `}
-          aria-label={`Verlust melden für Reise ${trip.origin.name} nach ${trip.destination.name}`}
+          aria-label={UI_LABELS.a11y.reportLossFor(trip.origin.name, trip.destination.name)}
         >
-          {isUrgent ? '🚨 Melden' : 'Verlust?'}
+          {isUrgent ? UI_LABELS.actions.reportUrgent : UI_LABELS.actions.reportLoss}
         </button>
       </div>
     </div>
   );
-}
-
-function TrainIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M8 18l-2 4h12l-2-4M3 6h18v8a2 2 0 01-2 2H5a2 2 0 01-2-2V6zm0 0a2 2 0 012-2h14a2 2 0 012 2M8 6v4m8-4v4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function SearchIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="11" cy="11" r="8" />
-      <path d="M21 21l-4.35-4.35" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function VehicleIcon({ type, className }: { type: 'train' | 'tram' | 'bus'; className?: string }) {
-  if (type === 'tram') {
-    return (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="4" y="3" width="16" height="16" rx="2" />
-        <path d="M8 19v2m8-2v2M4 12h16M9 7h6" strokeLinecap="round" />
-      </svg>
-    );
-  }
-
-  if (type === 'bus') {
-    return (
-      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="3" y="4" width="18" height="14" rx="2" />
-        <path d="M3 10h18M7 17v2m10-2v2" strokeLinecap="round" />
-      </svg>
-    );
-  }
-
-  // Default: train
-  return <TrainIcon className={className} />;
 }

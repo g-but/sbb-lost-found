@@ -3,7 +3,7 @@
  * Realistic Swiss public transport data for demonstration
  */
 
-import type { Trip, LostItem, User, Vehicle, Station, Driver, DriverNotification } from './types';
+import type { Trip, LostItem, User, Vehicle, Station, StaffMember, StaffNotification } from './types';
 
 // ============================================================================
 // Mock User
@@ -271,17 +271,20 @@ export function formatRelativeTime(isoString: string): string {
 }
 
 // ============================================================================
-// Driver Mock Data
+// Staff Mock Data (SBB Employees)
 // ============================================================================
 
-export const mockDriver: Driver = {
-  id: 'driver-001',
+export const mockStaff: StaffMember = {
+  id: 'staff-001',
   name: 'Marco Brunner',
   employeeNumber: 'SBB-7842',
-  role: 'driver',
+  role: 'conductor',
   vehicleId: 'v-001',
   isOnDuty: true,
 };
+
+/** @deprecated Use mockStaff instead */
+export const mockDriver = mockStaff;
 
 export const mockVehicle: Vehicle = {
   id: 'v-001',
@@ -292,14 +295,14 @@ export const mockVehicle: Vehicle = {
 };
 
 // ============================================================================
-// Driver Notifications Mock Data
+// Staff Notifications Mock Data
 // ============================================================================
 
-export const mockDriverNotifications: DriverNotification[] = [
+export const mockStaffNotifications: StaffNotification[] = [
   {
     id: 'notif-001',
     lostItemId: 'lost-001',
-    driverId: mockDriver.id,
+    staffId: mockStaff.id,
     vehicleId: mockVehicle.id,
     status: 'pending',
     message: 'Blaue Wasserflasche (Sigg)',
@@ -316,7 +319,7 @@ export const mockDriverNotifications: DriverNotification[] = [
   {
     id: 'notif-002',
     lostItemId: 'lost-002',
-    driverId: mockDriver.id,
+    staffId: mockStaff.id,
     vehicleId: mockVehicle.id,
     status: 'found',
     message: 'Schwarzer Regenschirm (Knirps)',
@@ -339,7 +342,7 @@ export const mockDriverNotifications: DriverNotification[] = [
   {
     id: 'notif-003',
     lostItemId: 'lost-003',
-    driverId: mockDriver.id,
+    staffId: mockStaff.id,
     vehicleId: mockVehicle.id,
     status: 'not_found',
     message: 'AirPods Pro Ladecase (weiss)',
@@ -360,3 +363,6 @@ export const mockDriverNotifications: DriverNotification[] = [
     },
   },
 ];
+
+/** @deprecated Use mockStaffNotifications instead */
+export const mockDriverNotifications = mockStaffNotifications;

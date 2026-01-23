@@ -5,6 +5,7 @@ import type { Trip, LostItem, ItemCategory, ItemLocation } from '@/lib/types';
 import { ITEM_CATEGORY_CONFIG, ITEM_LOCATION_CONFIG, ITEM_CATEGORIES, ITEM_LOCATIONS } from '@/lib/types';
 import { formatTime, getTimeSinceTrip } from '@/lib/mock-data';
 import { config } from '@/lib/config';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 
 interface LostItemModalProps {
   trip: Trip;
@@ -49,7 +50,7 @@ export function LostItemModal({ trip, onClose, onSubmit }: LostItemModalProps) {
     // Notify parent after showing success
     setTimeout(() => {
       onSubmit(newItem);
-    }, 2000);
+    }, config.timing.successMessageDelay);
   }, [category, description, location, trip.id, onSubmit]);
 
   const handleSelectCategory = (cat: ItemCategory) => {
@@ -79,7 +80,7 @@ export function LostItemModal({ trip, onClose, onSubmit }: LostItemModalProps) {
             </h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-sbb-milk flex items-center justify-center text-sbb-granite hover:bg-sbb-cloud transition-colors"
+              className="w-11 h-11 rounded-full bg-sbb-milk flex items-center justify-center text-sbb-granite hover:bg-sbb-cloud transition-colors"
               aria-label="Schliessen"
             >
               ✕
@@ -90,7 +91,7 @@ export function LostItemModal({ trip, onClose, onSubmit }: LostItemModalProps) {
         <div className="p-6">
           {/* Urgency Alert */}
           {isUrgent && step !== 'success' && (
-            <div className="bg-gradient-to-r from-[#FF5722] to-[#FF8A65] text-white rounded-sbb-lg p-5 mb-6 text-center">
+            <div className="bg-gradient-to-r from-sbb-red to-sbb-red-125 text-white rounded-sbb-lg p-5 mb-6 text-center">
               <div className="text-4xl mb-3">🚨</div>
               <h3 className="text-lg font-semibold mb-2">Schnell handeln!</h3>
               <p className="text-sbb-sm opacity-90">
@@ -169,6 +170,9 @@ export function LostItemModal({ trip, onClose, onSubmit }: LostItemModalProps) {
                     placeholder={`z.B. Schwarzes ${ITEM_CATEGORY_CONFIG[category!].labelDe}`}
                     className="input-sbb"
                     autoFocus
+                    minLength={config.validation.description.minLength}
+                    maxLength={config.validation.description.maxLength}
+                    required
                   />
                 </div>
 
@@ -207,7 +211,7 @@ export function LostItemModal({ trip, onClose, onSubmit }: LostItemModalProps) {
 
                 <button
                   onClick={handleSubmit}
-                  disabled={!description.trim() || isSubmitting}
+                  disabled={description.trim().length < config.validation.description.minLength || isSubmitting}
                   className="btn-sbb-primary w-full flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
@@ -273,25 +277,5 @@ export function LostItemModal({ trip, onClose, onSubmit }: LostItemModalProps) {
         </div>
       </div>
     </div>
-  );
-}
-
-function LoadingSpinner() {
-  return (
-    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" fill="none">
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
-    </svg>
   );
 }

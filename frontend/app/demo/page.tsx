@@ -109,7 +109,7 @@ export default function DemoPage() {
                   <FlowStep
                     number={3}
                     title="Aktive Suche"
-                    description="Fahrer/Zugbegleiter kann bei Endstation oder Halt aktiv suchen"
+                    description="Personal kann bei Endstation oder Halt aktiv suchen"
                     time="Während der Fahrt"
                     icon="🔍"
                   />
@@ -172,7 +172,7 @@ export default function DemoPage() {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Passenger View */}
               <div className="bg-white rounded-sbb-lg overflow-hidden shadow-sbb-card border border-sbb-cloud">
-                <div className="bg-gradient-to-r from-[#2196F3] to-[#64B5F6] text-white p-4">
+                <div className="bg-gradient-to-r from-sbb-blue to-sbb-blue text-white p-4">
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">👤</span>
                     <div>
@@ -206,14 +206,14 @@ export default function DemoPage() {
                 </div>
               </div>
 
-              {/* Driver View */}
+              {/* Staff View */}
               <div className="bg-white rounded-sbb-lg overflow-hidden shadow-sbb-card border border-sbb-cloud">
-                <div className="bg-gradient-to-r from-sbb-red to-[#FF6B6B] text-white p-4">
+                <div className="bg-gradient-to-r from-sbb-red to-sbb-red-125 text-white p-4">
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">🚂</span>
                     <div>
-                      <h3 className="font-semibold">Fahrer-Ansicht</h3>
-                      <p className="text-sbb-sm opacity-90">Zugpersonal-Interface</p>
+                      <h3 className="font-semibold">Mitarbeiter-Ansicht</h3>
+                      <p className="text-sbb-sm opacity-90">Für Lokführer, Zugbegleiter, Kontrolleure</p>
                     </div>
                   </div>
                 </div>
@@ -233,11 +233,11 @@ export default function DemoPage() {
                     </li>
                   </ul>
                   <Link
-                    href="/driver"
+                    href="/staff"
                     target="_blank"
                     className="btn-sbb-primary w-full text-center block"
                   >
-                    Fahrer-App öffnen →
+                    Mitarbeiter-App öffnen →
                   </Link>
                 </div>
               </div>
@@ -273,14 +273,14 @@ export default function DemoPage() {
                 <li className="flex gap-3">
                   <span className="w-6 h-6 rounded-full bg-sbb-red text-white flex items-center justify-center text-xs font-medium shrink-0">4</span>
                   <span className="text-sbb-granite">
-                    <strong className="text-sbb-charcoal">Fahrer-App:</strong> Beobachten Sie die
+                    <strong className="text-sbb-charcoal">Mitarbeiter-App:</strong> Beobachten Sie die
                     eingehende Benachrichtigung in Echtzeit
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="w-6 h-6 rounded-full bg-sbb-red text-white flex items-center justify-center text-xs font-medium shrink-0">5</span>
                   <span className="text-sbb-granite">
-                    <strong className="text-sbb-charcoal">Rückmeldung:</strong> Der Fahrer kann
+                    <strong className="text-sbb-charcoal">Rückmeldung:</strong> Das Personal kann
                     &quot;Gefunden&quot; oder &quot;Nicht gefunden&quot; melden
                   </span>
                 </li>

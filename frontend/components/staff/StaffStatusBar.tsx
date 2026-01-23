@@ -1,20 +1,21 @@
 'use client';
 
 import type { Vehicle } from '@/lib/types';
+import { UI_LABELS } from '@/lib/labels';
 
-interface DriverStatusBarProps {
+interface StaffStatusBarProps {
   vehicle: Vehicle;
   pendingCount: number;
   isOnline: boolean;
 }
 
-export function DriverStatusBar({ vehicle, pendingCount, isOnline }: DriverStatusBarProps) {
+export function StaffStatusBar({ vehicle, pendingCount, isOnline }: StaffStatusBarProps) {
   return (
     <div className="bg-sbb-charcoal text-white px-4 py-2 flex items-center justify-between text-sbb-xs">
       <div className="flex items-center gap-2">
         <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-sbb-success' : 'bg-sbb-smoke'}`} />
         <span className="opacity-80">
-          {isOnline ? 'Online' : 'Offline'}
+          {isOnline ? UI_LABELS.status.online : UI_LABELS.status.offline}
         </span>
       </div>
       <div className="font-medium">
@@ -26,7 +27,7 @@ export function DriverStatusBar({ vehicle, pendingCount, isOnline }: DriverStatu
             {pendingCount}
           </span>
         )}
-        <span className="opacity-80">offen</span>
+        <span className="opacity-80">{UI_LABELS.status.open}</span>
       </div>
     </div>
   );

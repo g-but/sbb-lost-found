@@ -216,26 +216,31 @@ export type WebSocketEvent =
   | { type: 'driver_notification'; payload: { vehicleId: string; lostItem: LostItem } };
 
 // ============================================================================
-// Driver Types
+// Staff Types (Drivers, Conductors, Controllers, Cleaners, etc.)
 // ============================================================================
 
-export interface Driver {
+export type StaffRole = 'driver' | 'conductor' | 'controller' | 'cleaner' | 'staff';
+
+export interface StaffMember {
   id: string;
   name: string;
   employeeNumber: string;
-  role: 'driver' | 'conductor' | 'staff';
+  role: StaffRole;
   vehicleId?: string;
   isOnDuty: boolean;
 }
+
+/** @deprecated Use StaffMember instead */
+export type Driver = StaffMember;
 
 export type NotificationStatus = 'pending' | 'acknowledged' | 'found' | 'not_found';
 
 export type NotificationPriority = 'normal' | 'urgent' | 'critical';
 
-export interface DriverNotification {
+export interface StaffNotification {
   id: string;
   lostItemId: string;
-  driverId: string;
+  staffId: string;
   vehicleId: string;
   status: NotificationStatus;
   message: string;
@@ -256,3 +261,6 @@ export interface DriverNotification {
     seatInfo?: string;
   };
 }
+
+/** @deprecated Use StaffNotification instead */
+export type DriverNotification = StaffNotification;

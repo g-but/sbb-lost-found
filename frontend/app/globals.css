@@ -2,31 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* SBB Design System Global Styles */
+/* SBB Design System Global Styles
+ *
+ * IMPORTANT: Colors are defined in tailwind.config.js as SSOT
+ * This file only contains CSS variables for safe areas and animations
+ */
 :root {
-  /* Official SBB Colors */
-  --sbb-red: #EB0000;
-  --sbb-red-125: #C60018;
-  --sbb-red-150: #A20013;
-  --sbb-charcoal: #212121;
-  --sbb-iron: #444444;
-  --sbb-granite: #686868;
-  --sbb-smoke: #8D8D8D;
-  --sbb-cloud: #E5E5E5;
-  --sbb-milk: #F6F6F6;
-  --sbb-white: #FFFFFF;
-  --sbb-blue: #2D327D;
-  --sbb-success: #00973B;
-  --sbb-warning: #FFAB00;
-
-  /* Spacing (4px base grid) */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 48px;
-
   /* Safe area insets for mobile */
   --safe-area-top: env(safe-area-inset-top);
   --safe-area-bottom: env(safe-area-inset-bottom);

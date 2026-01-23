@@ -1,15 +1,16 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { DriverHeader } from '@/components/driver/DriverHeader';
-import { NotificationCard } from '@/components/driver/NotificationCard';
-import { DriverStatusBar } from '@/components/driver/DriverStatusBar';
-import type { DriverNotification, NotificationStatus } from '@/lib/types';
-import { mockDriverNotifications, mockDriver, mockVehicle } from '@/lib/mock-data';
+import { StaffHeader } from '@/components/staff/StaffHeader';
+import { NotificationCard } from '@/components/staff/NotificationCard';
+import { StaffStatusBar } from '@/components/staff/StaffStatusBar';
+import type { StaffNotification, NotificationStatus } from '@/lib/types';
+import { mockStaffNotifications, mockStaff, mockVehicle } from '@/lib/mock-data';
 import { config } from '@/lib/config';
+import { UI_LABELS } from '@/lib/labels';
 
-export default function DriverPage() {
-  const [notifications, setNotifications] = useState<DriverNotification[]>([]);
+export default function StaffPage() {
+  const [notifications, setNotifications] = useState<StaffNotification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<'all' | 'pending' | 'resolved'>('all');
   const [showNewNotification, setShowNewNotification] = useState(false);
@@ -17,7 +18,7 @@ export default function DriverPage() {
   useEffect(() => {
     // Simulate loading notifications
     const timer = setTimeout(() => {
-      setNotifications(mockDriverNotifications);
+      setNotifications(mockStaffNotifications);
       setIsLoading(false);
     }, config.demo.mockDelay);
 
@@ -31,10 +32,10 @@ export default function DriverPage() {
     const demoTimer = setTimeout(() => {
       setShowNewNotification(true);
 
-      const newNotification: DriverNotification = {
+      const newNotification: StaffNotification = {
         id: `notif-${Date.now()}`,
         lostItemId: 'lost-demo',
-        driverId: mockDriver.id,
+        staffId: mockStaff.id,
         vehicleId: mockVehicle.id,
         status: 'pending',
         message: 'Schwarze Laptop-Tasche',
@@ -55,7 +56,7 @@ export default function DriverPage() {
       if (typeof window !== 'undefined' && 'vibrate' in navigator) {
         navigator.vibrate([200, 100, 200]);
       }
-    }, 5000);
+    }, config.timing.demoNotificationDelay);
 
     return () => clearTimeout(demoTimer);
   }, []);
@@ -95,25 +96,28 @@ export default function DriverPage() {
   return (
     <div className="min-h-screen bg-sbb-milk">
       {/* Status Bar */}
-      <DriverStatusBar
+      <StaffStatusBar
         vehicle={mockVehicle}
         pendingCount={pendingCount}
         isOnline={true}
       />
 
       {/* Header */}
-      <DriverHeader driver={mockDriver} vehicle={mockVehicle} />
+      <StaffHeader staff={mockStaff} vehicle={mockVehicle} />
 
       {/* Filter Tabs */}
       <div className="sticky top-0 bg-white z-10 border-b border-sbb-cloud">
-        <div className="flex px-4">
+        <div className="flex px-4" role="tablist" aria-label="Meldungsfilter">
           {[
-            { id: 'all', label: 'Alle', count: notifications.length },
-            { id: 'pending', label: 'Offen', count: pendingCount },
-            { id: 'resolved', label: 'Erledigt', count: notifications.length - pendingCount },
+            { id: 'all', label: UI_LABELS.staff.tabAll, count: notifications.length },
+            { id: 'pending', label: UI_LABELS.staff.tabOpen, count: pendingCount },
+            { id: 'resolved', label: UI_LABELS.staff.tabResolved, count: notifications.length - pendingCount },
           ].map(tab => (
             <button
               key={tab.id}
+              role="tab"
+              aria-selected={activeFilter === tab.id}
+              aria-controls={`tabpanel-${tab.id}`}
               onClick={() => setActiveFilter(tab.id as typeof activeFilter)}
               className={`
                 flex-1 py-3 px-2 text-sbb-sm font-medium border-b-2 transition-colors
@@ -165,13 +169,13 @@ export default function DriverPage() {
             </div>
             <h3 className="text-sbb-lg font-semibold text-sbb-charcoal mb-2">
               {activeFilter === 'pending'
-                ? 'Keine offenen Meldungen'
-                : 'Keine Meldungen'}
+                ? UI_LABELS.staff.noOpenReports
+                : UI_LABELS.staff.noReports}
             </h3>
             <p className="text-sbb-sm text-sbb-granite">
               {activeFilter === 'pending'
-                ? 'Alle Meldungen wurden bearbeitet.'
-                : 'Es liegen keine Verlustmeldungen vor.'}
+                ? UI_LABELS.staff.allProcessed
+                : UI_LABELS.staff.noLostReports}
             </p>
           </div>
         ) : (
@@ -191,9 +195,9 @@ export default function DriverPage() {
       {showNewNotification && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20 animate-fade-in">
           <div className="bg-white rounded-sbb-lg shadow-xl mx-4 max-w-sm w-full animate-slide-down overflow-hidden">
-            <div className="bg-gradient-to-r from-[#FF5722] to-[#FF8A65] text-white p-4 text-center">
+            <div className="bg-gradient-to-r from-sbb-red to-sbb-red-125 text-white p-4 text-center">
               <div className="text-4xl mb-2">🚨</div>
-              <h3 className="text-lg font-semibold">Neue Verlustmeldung!</h3>
+              <h3 className="text-lg font-semibold">{UI_LABELS.staff.newLostReport}</h3>
             </div>
             <div className="p-4">
               <p className="text-sbb-base text-sbb-charcoal font-medium mb-1">
@@ -206,7 +210,7 @@ export default function DriverPage() {
                 onClick={() => setShowNewNotification(false)}
                 className="btn-sbb-primary w-full"
               >
-                Meldung ansehen
+                {UI_LABELS.staff.viewReport}
               </button>
             </div>
           </div>
