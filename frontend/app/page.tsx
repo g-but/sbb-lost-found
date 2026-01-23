@@ -240,28 +240,22 @@ export default function PassengerApp() {
 
     return (
       <div className="px-4 pt-4 pb-6">
-        {/* Current Journey (if active) */}
+        {/* Current Journey (if active) - no lost button here, user is on the train */}
         {currentTrip && currentTrip.status === 'active' && (
           <section className="mb-4">
             <TripCard
               trip={currentTrip}
               variant="active"
-              onReportLost={() => handleReportLost(currentTrip)}
             />
           </section>
         )}
 
-        {/* Einzelreisen (Individual Trips) Section */}
+        {/* Einzelreisen (Individual Trips) Section - past trips */}
         <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sbb-base font-semibold text-sbb-charcoal">
-              Einzelreisen
-            </h2>
-            <span className="text-sbb-xs text-sbb-granite">
-              OBI aktiv
-            </span>
-          </div>
-          <div className="space-y-3">
+          <h2 className="text-sbb-sm font-medium text-sbb-granite mb-3">
+            Letzte Reisen
+          </h2>
+          <div className="space-y-2">
             {recentTrips.slice(0, 5).map((trip) => (
               <TripCard
                 key={trip.id}
@@ -273,19 +267,6 @@ export default function PassengerApp() {
             ))}
           </div>
         </section>
-
-        {/* Lost something prompt */}
-        <div className="mt-6 p-4 bg-gradient-to-r from-sbb-red to-sbb-red-125 rounded-sbb-lg text-white">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🔍</span>
-            <div className="flex-1">
-              <h3 className="font-semibold">Etwas verloren?</h3>
-              <p className="text-sbb-sm opacity-90">
-                Melden Sie einen Verlust direkt bei Ihrer Reise
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     );
   };
