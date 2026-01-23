@@ -74,6 +74,16 @@ export const QUICK_ACTIONS_CONFIG = [
 // ============================================================================
 
 export const UI_LABELS = {
+  // Navigation (SBB Mobile App tabs)
+  navigation: {
+    planen: 'Planen',
+    reisen: 'Reisen',
+    easyride: 'EasyRide',
+    billette: 'Billette',
+    shop: 'Shop',
+    profil: 'Profil',
+  },
+
   // Greetings
   greetings: {
     morning: 'Guten Morgen',

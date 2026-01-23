@@ -19,7 +19,7 @@ export default function DemoPage() {
             Echtzeit-Verlustmeldung für den ÖV
           </h1>
           <p className="text-sbb-base opacity-90 max-w-2xl">
-            Verlorene Gegenstände sofort melden, Fahrer in Echtzeit benachrichtigen,
+            Verlorene Gegenstände sofort melden, Personal in Echtzeit benachrichtigen,
             Wiederfindungsrate massiv erhöhen.
           </p>
         </div>
@@ -185,11 +185,15 @@ export default function DemoPage() {
                   <ul className="space-y-2 text-sbb-sm text-sbb-granite mb-4">
                     <li className="flex items-center gap-2">
                       <span className="text-sbb-success">✓</span>
-                      Aktuelle Reisen anzeigen
+                      6-Tab Navigation wie SBB Mobile
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="text-sbb-success">✓</span>
-                      Verlust mit 3 Klicks melden
+                      &quot;Reisen&quot;-Tab mit Einzelreisen
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-sbb-success">✓</span>
+                      Verlust direkt bei der Reise melden
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="text-sbb-success">✓</span>
@@ -252,22 +256,22 @@ export default function DemoPage() {
                 <li className="flex gap-3">
                   <span className="w-6 h-6 rounded-full bg-sbb-red text-white flex items-center justify-center text-xs font-medium shrink-0">1</span>
                   <span className="text-sbb-granite">
-                    <strong className="text-sbb-charcoal">Passagier-App:</strong> Klicken Sie auf
-                    &quot;Lost & Found&quot; oder &quot;Etwas verloren?&quot; bei einer Reise
+                    <strong className="text-sbb-charcoal">Passagier-App:</strong> Öffnen Sie den
+                    &quot;Reisen&quot;-Tab (startet automatisch dort)
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="w-6 h-6 rounded-full bg-sbb-red text-white flex items-center justify-center text-xs font-medium shrink-0">2</span>
                   <span className="text-sbb-granite">
-                    <strong className="text-sbb-charcoal">Kategorie wählen:</strong> Wählen Sie
-                    die Art des verlorenen Gegenstands
+                    <strong className="text-sbb-charcoal">Reise wählen:</strong> Klicken Sie auf
+                    &quot;Verlust?&quot; bei einer Ihrer Einzelreisen
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="w-6 h-6 rounded-full bg-sbb-red text-white flex items-center justify-center text-xs font-medium shrink-0">3</span>
                   <span className="text-sbb-granite">
-                    <strong className="text-sbb-charcoal">Details eingeben:</strong> Beschreibung
-                    und Position angeben
+                    <strong className="text-sbb-charcoal">Details eingeben:</strong> Kategorie wählen,
+                    Beschreibung und Position angeben
                   </span>
                 </li>
                 <li className="flex gap-3">

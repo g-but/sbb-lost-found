@@ -5,20 +5,162 @@ import { StatusBar } from '@/components/ui/StatusBar';
 import { Header } from '@/components/passenger/Header';
 import { TripCard } from '@/components/passenger/TripCard';
 import { LostItemModal } from '@/components/passenger/LostItemModal';
-import { BottomNav } from '@/components/ui/BottomNav';
+import { BottomNav, type NavTab } from '@/components/ui/BottomNav';
 import { Toast } from '@/components/ui/Toast';
-import { QuickActions } from '@/components/passenger/QuickActions';
 import { mockUser, mockTrips, mockActiveTrip, formatRelativeTime } from '@/lib/mock-data';
 import { config } from '@/lib/config';
 import { UI_LABELS } from '@/lib/labels';
 import type { Trip, LostItem } from '@/lib/types';
 
+// Tab content components
+function PlanenTab() {
+  return (
+    <div className="px-4 pt-4 pb-6">
+      <div className="bg-white rounded-sbb-lg p-4 shadow-sbb-card mb-4">
+        <h2 className="text-sbb-lg font-semibold text-sbb-charcoal mb-3">Verbindung suchen</h2>
+        <div className="space-y-3">
+          <div className="flex items-center gap-3 p-3 bg-sbb-milk rounded-sbb-md">
+            <div className="w-2 h-2 rounded-full bg-sbb-success" />
+            <input
+              type="text"
+              placeholder="Von"
+              className="flex-1 bg-transparent text-sbb-base outline-none"
+            />
+          </div>
+          <div className="flex items-center gap-3 p-3 bg-sbb-milk rounded-sbb-md">
+            <div className="w-2 h-2 rounded-full bg-sbb-red" />
+            <input
+              type="text"
+              placeholder="Nach"
+              className="flex-1 bg-transparent text-sbb-base outline-none"
+            />
+          </div>
+        </div>
+        <button className="w-full mt-4 bg-sbb-red text-white py-3 rounded-sbb-md font-medium">
+          Verbindung suchen
+        </button>
+      </div>
+      <p className="text-sbb-sm text-sbb-granite text-center">
+        Demo: Planen-Tab (Verbindungssuche)
+      </p>
+    </div>
+  );
+}
+
+function EasyRideTab() {
+  return (
+    <div className="px-4 pt-4 pb-6">
+      <div className="bg-white rounded-sbb-lg p-6 shadow-sbb-card text-center">
+        <div className="w-16 h-16 bg-sbb-milk rounded-full flex items-center justify-center mx-auto mb-4">
+          <span className="text-3xl">🎫</span>
+        </div>
+        <h2 className="text-sbb-lg font-semibold text-sbb-charcoal mb-2">EasyRide</h2>
+        <p className="text-sbb-sm text-sbb-granite mb-4">
+          Check-in, reisen, Check-out. Der Fahrpreis wird automatisch berechnet.
+        </p>
+        <button className="w-full bg-sbb-red text-white py-3 rounded-sbb-md font-medium">
+          EasyRide starten
+        </button>
+      </div>
+      <p className="text-sbb-sm text-sbb-granite text-center mt-4">
+        Demo: EasyRide-Tab
+      </p>
+    </div>
+  );
+}
+
+function BilletteTab() {
+  return (
+    <div className="px-4 pt-4 pb-6">
+      <div className="bg-white rounded-sbb-lg p-4 shadow-sbb-card mb-4">
+        <h2 className="text-sbb-lg font-semibold text-sbb-charcoal mb-3">Meine Billette</h2>
+        <div className="flex gap-2 mb-4">
+          <button className="flex-1 py-2 px-3 bg-sbb-red text-white rounded-sbb-md text-sbb-sm font-medium">
+            Gültig
+          </button>
+          <button className="flex-1 py-2 px-3 bg-sbb-milk text-sbb-granite rounded-sbb-md text-sbb-sm font-medium">
+            Abgelaufen
+          </button>
+        </div>
+        <div className="text-center py-8">
+          <span className="text-4xl mb-2 block">🎫</span>
+          <p className="text-sbb-sm text-sbb-granite">Keine aktiven Billette</p>
+        </div>
+      </div>
+      <p className="text-sbb-sm text-sbb-granite text-center">
+        Demo: Billette & Abos Tab
+      </p>
+    </div>
+  );
+}
+
+function ShopTab() {
+  return (
+    <div className="px-4 pt-4 pb-6">
+      <div className="bg-white rounded-sbb-lg p-4 shadow-sbb-card mb-4">
+        <h2 className="text-sbb-lg font-semibold text-sbb-charcoal mb-3">Shop & Services</h2>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { icon: '🎫', label: 'Tageskarten' },
+            { icon: '🚲', label: 'Velo-Tageskarte' },
+            { icon: '🐕', label: 'Hunde-Tageskarte' },
+            { icon: '🔍', label: 'Fundservice' },
+          ].map((item) => (
+            <div key={item.label} className="p-4 bg-sbb-milk rounded-sbb-md text-center">
+              <span className="text-2xl mb-2 block">{item.icon}</span>
+              <span className="text-sbb-sm text-sbb-charcoal">{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p className="text-sbb-sm text-sbb-granite text-center">
+        Demo: Shop & Services Tab
+      </p>
+    </div>
+  );
+}
+
+function ProfilTab() {
+  const user = mockUser;
+  return (
+    <div className="px-4 pt-4 pb-6">
+      <div className="bg-white rounded-sbb-lg p-4 shadow-sbb-card mb-4">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-16 h-16 bg-sbb-milk rounded-full flex items-center justify-center">
+            <span className="text-2xl">👤</span>
+          </div>
+          <div>
+            <h2 className="text-sbb-lg font-semibold text-sbb-charcoal">{user.name}</h2>
+            <p className="text-sbb-sm text-sbb-granite">{user.swissPassId || 'SwissPass'}</p>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {[
+            'Persönliche Daten',
+            'Zahlungsmittel',
+            'Benachrichtigungen',
+            'Einstellungen',
+            'Hilfe & Kontakt',
+          ].map((item) => (
+            <div key={item} className="p-3 bg-sbb-milk rounded-sbb-md flex justify-between items-center">
+              <span className="text-sbb-base text-sbb-charcoal">{item}</span>
+              <span className="text-sbb-granite">›</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p className="text-sbb-sm text-sbb-granite text-center">
+        Demo: Profil-Tab
+      </p>
+    </div>
+  );
+}
+
 export default function PassengerApp() {
   const [showLostModal, setShowLostModal] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
-  const [reportedItem, setReportedItem] = useState<LostItem | null>(null);
-  const [activeTab, setActiveTab] = useState<'home' | 'tickets' | 'journey' | 'more'>('home');
+  const [activeTab, setActiveTab] = useState<NavTab>('reisen');
   const [isLoading, setIsLoading] = useState(true);
   const [currentTrip, setCurrentTrip] = useState<Trip | null>(null);
   const [recentTrips, setRecentTrips] = useState<Trip[]>([]);
@@ -26,7 +168,6 @@ export default function PassengerApp() {
   // Load trips data (simulates API call)
   useEffect(() => {
     const loadData = async () => {
-      // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, config.demo.mockDelay));
       setCurrentTrip(mockActiveTrip);
       setRecentTrips(mockTrips);
@@ -41,17 +182,16 @@ export default function PassengerApp() {
   }, []);
 
   const handleSubmitReport = useCallback((item: LostItem) => {
-    setReportedItem(item);
     setShowLostModal(false);
     setToast({
       message: UI_LABELS.lostItem.driverNotifiedMessage,
       type: 'success',
     });
 
-    // Demo: Simulate driver searching
+    // Demo: Simulate staff searching
     setTimeout(() => {
       setToast({
-        message: 'Fahrer sucht aktiv nach Ihrem Gegenstand',
+        message: 'Personal sucht aktiv nach Ihrem Gegenstand',
         type: 'info',
       });
     }, config.timing.demoNotificationDelay);
@@ -62,7 +202,113 @@ export default function PassengerApp() {
     setSelectedTrip(null);
   }, []);
 
-  // Toast auto-dismisses itself via Toast component
+  // Render loading skeleton for Reisen tab
+  const renderLoadingSkeleton = () => (
+    <div className="px-4 pt-4">
+      {/* Active trip skeleton */}
+      <div className="bg-sbb-cloud rounded-sbb-lg p-5 mb-4 animate-pulse">
+        <div className="h-4 bg-sbb-silver rounded w-1/3 mb-4" />
+        <div className="h-6 bg-sbb-silver rounded w-2/3 mb-2" />
+        <div className="h-4 bg-sbb-silver rounded w-1/2 mb-4" />
+        <div className="h-12 bg-sbb-silver rounded" />
+      </div>
+
+      {/* Recent trips skeleton */}
+      <div className="h-5 bg-sbb-cloud rounded w-1/3 mb-4" />
+      <div className="space-y-3">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="bg-white rounded-sbb-lg p-4 animate-pulse shadow-sbb-card">
+            <div className="flex gap-3">
+              <div className="w-4 h-4 bg-sbb-cloud rounded" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-sbb-cloud rounded w-3/4" />
+                <div className="h-3 bg-sbb-cloud rounded w-1/2" />
+              </div>
+              <div className="w-16 h-8 bg-sbb-cloud rounded-sbb-md" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  // Render the Reisen (Trips) tab content
+  const renderReisenTab = () => {
+    if (isLoading) {
+      return renderLoadingSkeleton();
+    }
+
+    return (
+      <div className="px-4 pt-4 pb-6">
+        {/* Current Journey (if active) */}
+        {currentTrip && currentTrip.status === 'active' && (
+          <section className="mb-4">
+            <TripCard
+              trip={currentTrip}
+              variant="active"
+              onReportLost={() => handleReportLost(currentTrip)}
+            />
+          </section>
+        )}
+
+        {/* Einzelreisen (Individual Trips) Section */}
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sbb-base font-semibold text-sbb-charcoal">
+              Einzelreisen
+            </h2>
+            <span className="text-sbb-xs text-sbb-granite">
+              OBI aktiv
+            </span>
+          </div>
+          <div className="space-y-3">
+            {recentTrips.slice(0, 5).map((trip) => (
+              <TripCard
+                key={trip.id}
+                trip={trip}
+                variant="compact"
+                onReportLost={() => handleReportLost(trip)}
+                timeAgo={formatRelativeTime(trip.arrivalTime)}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Lost something prompt */}
+        <div className="mt-6 p-4 bg-gradient-to-r from-sbb-red to-sbb-red-125 rounded-sbb-lg text-white">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🔍</span>
+            <div className="flex-1">
+              <h3 className="font-semibold">Etwas verloren?</h3>
+              <p className="text-sbb-sm opacity-90">
+                Melden Sie einen Verlust direkt bei Ihrer Reise
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Render current tab content
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'planen':
+        return <PlanenTab />;
+      case 'reisen':
+        return renderReisenTab();
+      case 'easyride':
+        return <EasyRideTab />;
+      case 'billette':
+        return <BilletteTab />;
+      case 'shop':
+        return <ShopTab />;
+      case 'profil':
+        return <ProfilTab />;
+      default:
+        return renderReisenTab();
+    }
+  };
 
   return (
     <>
@@ -73,84 +319,11 @@ export default function PassengerApp() {
       <Header user={mockUser} />
 
       {/* Main Content */}
-      <main className="pb-24 overflow-y-auto hide-scrollbar">
-        {isLoading ? (
-          // Loading skeleton
-          <div className="px-6 pt-2">
-            {/* Active trip skeleton */}
-            <div className="bg-sbb-cloud rounded-sbb-lg p-5 mb-6 animate-pulse">
-              <div className="h-4 bg-sbb-silver rounded w-1/3 mb-4" />
-              <div className="h-6 bg-sbb-silver rounded w-2/3 mb-2" />
-              <div className="h-4 bg-sbb-silver rounded w-1/2 mb-4" />
-              <div className="h-12 bg-sbb-silver rounded" />
-            </div>
-
-            {/* Quick actions skeleton */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="bg-white rounded-sbb-lg p-5 animate-pulse">
-                  <div className="w-12 h-12 bg-sbb-cloud rounded-sbb-md mb-3" />
-                  <div className="h-4 bg-sbb-cloud rounded w-3/4 mb-2" />
-                  <div className="h-3 bg-sbb-cloud rounded w-1/2" />
-                </div>
-              ))}
-            </div>
-
-            {/* Recent trips skeleton */}
-            <div className="h-6 bg-sbb-cloud rounded w-1/3 mb-4" />
-            <div className="space-y-3">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white rounded-sbb-lg p-4 animate-pulse">
-                  <div className="flex gap-3">
-                    <div className="w-4 h-4 bg-sbb-cloud rounded" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-sbb-cloud rounded w-3/4" />
-                      <div className="h-3 bg-sbb-cloud rounded w-1/2" />
-                    </div>
-                    <div className="w-16 h-8 bg-sbb-cloud rounded-sbb-md" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <>
-            {/* Current Journey (if active) */}
-            {currentTrip && currentTrip.status === 'active' && (
-              <section className="px-6 -mt-4 relative z-10">
-                <TripCard
-                  trip={currentTrip}
-                  variant="active"
-                  onReportLost={() => handleReportLost(currentTrip)}
-                />
-              </section>
-            )}
-
-            {/* Quick Actions */}
-            <QuickActions onLostFound={() => setShowLostModal(true)} />
-
-            {/* Recent Trips */}
-            <section className="px-6 pb-6">
-              <h2 className="text-sbb-xl font-semibold text-sbb-charcoal mb-4">
-                {UI_LABELS.trip.recentTrips}
-              </h2>
-              <div className="space-y-3">
-                {recentTrips.slice(0, 5).map((trip) => (
-                  <TripCard
-                    key={trip.id}
-                    trip={trip}
-                    variant="compact"
-                    onReportLost={() => handleReportLost(trip)}
-                    timeAgo={formatRelativeTime(trip.arrivalTime)}
-                  />
-                ))}
-              </div>
-            </section>
-          </>
-        )}
+      <main className="pb-20 overflow-y-auto hide-scrollbar bg-sbb-milk min-h-[calc(100vh-120px)]">
+        {renderTabContent()}
       </main>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation - 6 tabs like real SBB app */}
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Lost Item Modal */}

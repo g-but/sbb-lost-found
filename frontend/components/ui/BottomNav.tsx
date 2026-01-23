@@ -1,17 +1,29 @@
 'use client';
 
-import { HomeIcon, TicketIcon, MapIcon, MoreIcon } from '@/components/ui/icons';
+import {
+  PlanenIcon,
+  ReisenIcon,
+  EasyRideIcon,
+  BilletteIcon,
+  ShopIcon,
+  ProfilIcon,
+} from '@/components/ui/icons';
+import { UI_LABELS } from '@/lib/labels';
+
+export type NavTab = 'planen' | 'reisen' | 'easyride' | 'billette' | 'shop' | 'profil';
 
 interface BottomNavProps {
-  activeTab: 'home' | 'tickets' | 'journey' | 'more';
-  onTabChange: (tab: 'home' | 'tickets' | 'journey' | 'more') => void;
+  activeTab: NavTab;
+  onTabChange: (tab: NavTab) => void;
 }
 
-const navItems = [
-  { id: 'home' as const, label: 'Home', icon: HomeIcon },
-  { id: 'tickets' as const, label: 'Tickets', icon: TicketIcon },
-  { id: 'journey' as const, label: 'Reise', icon: MapIcon },
-  { id: 'more' as const, label: 'Mehr', icon: MoreIcon },
+const navItems: { id: NavTab; label: string; icon: React.FC<{ className?: string }> }[] = [
+  { id: 'planen', label: UI_LABELS.navigation.planen, icon: PlanenIcon },
+  { id: 'reisen', label: UI_LABELS.navigation.reisen, icon: ReisenIcon },
+  { id: 'easyride', label: UI_LABELS.navigation.easyride, icon: EasyRideIcon },
+  { id: 'billette', label: UI_LABELS.navigation.billette, icon: BilletteIcon },
+  { id: 'shop', label: UI_LABELS.navigation.shop, icon: ShopIcon },
+  { id: 'profil', label: UI_LABELS.navigation.profil, icon: ProfilIcon },
 ];
 
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
@@ -22,14 +34,14 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
           key={id}
           onClick={() => onTabChange(id)}
           className={`
-            flex-1 flex flex-col items-center py-2 px-1
+            flex-1 flex flex-col items-center py-2 px-0.5 min-w-0
             transition-colors duration-200
             ${activeTab === id ? 'text-sbb-red' : 'text-sbb-smoke hover:text-sbb-granite'}
           `}
           aria-current={activeTab === id ? 'page' : undefined}
         >
-          <Icon className="w-6 h-6 mb-1" />
-          <span className="text-[11px] font-medium">{label}</span>
+          <Icon className="w-5 h-5 mb-0.5" />
+          <span className="text-[10px] font-medium truncate w-full text-center">{label}</span>
         </button>
       ))}
     </nav>
