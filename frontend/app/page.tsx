@@ -120,7 +120,11 @@ function ShopTab() {
   );
 }
 
-function ProfilTab() {
+interface ProfilTabProps {
+  onOpenFundservice?: () => void;
+}
+
+function ProfilTab({ onOpenFundservice }: ProfilTabProps) {
   const user = mockUser;
   return (
     <div className="px-4 pt-4 pb-6">
@@ -135,6 +139,20 @@ function ProfilTab() {
           </div>
         </div>
         <div className="space-y-2">
+          {/* Fundservice - Lost & Found */}
+          {onOpenFundservice && (
+            <button
+              onClick={onOpenFundservice}
+              className="w-full p-3 bg-sbb-red/10 rounded-sbb-md flex items-center gap-3 hover:bg-sbb-red/15 transition-colors"
+            >
+              <span className="text-xl">🧳</span>
+              <div className="flex-1 text-left">
+                <span className="text-sbb-base font-medium text-sbb-red">Fundservice</span>
+                <p className="text-sbb-xs text-sbb-granite">Verlust melden oder Status prüfen</p>
+              </div>
+              <span className="text-sbb-red">›</span>
+            </button>
+          )}
           {[
             'Persönliche Daten',
             'Zahlungsmittel',
@@ -256,12 +274,13 @@ export default function PassengerApp() {
             Letzte Reisen
           </h2>
           <div className="space-y-2">
-            {recentTrips.slice(0, 5).map((trip) => (
+            {recentTrips.slice(0, 5).map((trip, index) => (
               <TripCard
                 key={trip.id}
                 trip={trip}
                 variant="compact"
-                onReportLost={() => handleReportLost(trip)}
+                // Only show lost button on most recent trip (index 0)
+                onReportLost={index === 0 ? () => handleReportLost(trip) : undefined}
                 timeAgo={formatRelativeTime(trip.arrivalTime)}
               />
             ))}
@@ -285,7 +304,12 @@ export default function PassengerApp() {
       case 'shop':
         return <ShopTab />;
       case 'profil':
-        return <ProfilTab />;
+        return <ProfilTab onOpenFundservice={() => {
+          // Open lost item modal with most recent trip
+          if (recentTrips.length > 0) {
+            handleReportLost(recentTrips[0]);
+          }
+        }} />;
       default:
         return renderReisenTab();
     }

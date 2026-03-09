@@ -114,7 +114,7 @@ export function TripCard({ trip, variant, onReportLost, timeAgo }: TripCardProps
             `}
             aria-label={UI_LABELS.a11y.reportLossFor(trip.origin.name, trip.destination.name)}
           >
-            {isUrgent ? '!' : ''} {UI_LABELS.actions.reportLoss}
+{UI_LABELS.actions.reportLoss}
           </button>
         )}
       </div>
